@@ -1,11 +1,11 @@
 # desafio-banco
 Desafio de Java - Sistema Bancário
 
-#### Para cadastrar uma pessoa (api/bank/v1/person): 
+### Para cadastrar uma pessoa (api/bank/v1/person): 
 
-##### O Json enviado deve seguir os seguintes exemplos: 
+#### O Json enviado deve seguir os seguintes exemplos: 
 
-###### Pessoa Física:
+##### Pessoa Física:
 ```json
 {
 	"type": "PF",
@@ -13,10 +13,9 @@ Desafio de Java - Sistema Bancário
 	"cpf": "70433960000"
 }
 ```
-
 Para gerar CPF's válidos pode ser utilizado: https://www.4devs.com.br/gerador_de_cpf 
 
-###### Pessoa Jurídica:
+##### Pessoa Jurídica:
 ```json
 {
 	"type": "PJ",
@@ -24,11 +23,10 @@ Para gerar CPF's válidos pode ser utilizado: https://www.4devs.com.br/gerador_d
 	"cnpj": "71961822000187"
 }
 ```
-
 Para gerar CNPJ'S válidos pode ser utilizado: https://www.4devs.com.br/gerador_de_cnpj
 
 
-#### Para buscar pessoas (api/bank/v1/persons): 
+### Para buscar pessoas (api/bank/v1/persons): 
 
 Exemplo de Response: 
 ```json
@@ -49,10 +47,10 @@ Exemplo de Response:
 }
 ```
 
-#### Para buscar contas(/api/bank/v1/accounts): 
+
+### Para buscar contas (/api/bank/v1/accounts): 
 
 Exemplo de Response:
-
 ```json
 {
     "id": 1,
