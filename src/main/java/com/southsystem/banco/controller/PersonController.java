@@ -1,5 +1,6 @@
 package com.southsystem.banco.controller;
 
+import com.southsystem.banco.exceptions.PersonDuplicatedException;
 import com.southsystem.banco.persistence.model.LegalPerson;
 import com.southsystem.banco.persistence.model.Person;
 import com.southsystem.banco.persistence.model.PhysicalPerson;
@@ -22,7 +23,7 @@ public class PersonController {
 
     @Autowired
     private PersonBaseService<Person> personService;
-    
+
     @Autowired
     private PersonBaseService<LegalPerson> legalPersonService;
 
@@ -31,7 +32,7 @@ public class PersonController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void save(@RequestBody Person person) {
+    public void save(@RequestBody Person person) throws PersonDuplicatedException {
         personService.save(person);
     }
 

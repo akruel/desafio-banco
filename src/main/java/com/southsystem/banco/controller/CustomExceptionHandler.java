@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import com.southsystem.banco.exceptions.PersonDuplicatedException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +51,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         }
         ErrorResponse error = new ErrorResponse("Validation Failed", details);
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PersonDuplicatedException.class)
+    public final ResponseEntity<Object> handleDuplicatedException(PersonDuplicatedException ex, WebRequest request) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse("Conflict", details);
+        return new ResponseEntity(error, HttpStatus.CONFLICT);
     }
 }

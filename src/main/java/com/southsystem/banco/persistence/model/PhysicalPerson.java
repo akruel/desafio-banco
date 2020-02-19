@@ -9,6 +9,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class PhysicalPerson extends Person{
 
     @NotEmpty(message = "CPF não pode ser vazio")
     @Size(min = 11, max = 11, message = "Tamanho do CPF deve ser igual à 11")
+    @CPF
     private String cpf;
 
     @Override

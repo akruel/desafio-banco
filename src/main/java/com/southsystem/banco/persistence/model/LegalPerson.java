@@ -9,6 +9,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import org.hibernate.validator.constraints.br.CNPJ;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class LegalPerson extends Person {
 
     @NotEmpty(message = "CNPJ não pode ser vazio")
     @Size(min = 14, max = 14, message = "Tamanho do CNPJ deve ser igual à 14")
+    @CNPJ
     private String cnpj;
 
     @Override
