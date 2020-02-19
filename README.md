@@ -1,13 +1,13 @@
 # desafio-banco
 Desafio de Java - Sistema Bancário
 
-##### Para cadastrar uma pessoa:
+#### Para cadastrar uma pessoa:
 
 http://localhost:8080/api/bank/v1/person
 
-O Json enviado deve seguir os seguintes exemplos: 
+##### O Json enviado deve seguir os seguintes exemplos: 
 
-Pessoa Física:
+###### Pessoa Física:
 >{
 >	"type": "PF",
 >	"name": "Teste PF",
@@ -16,7 +16,7 @@ Pessoa Física:
 
 Para gerar CPF's válidos pode ser utilizado: https://www.4devs.com.br/gerador_de_cpf 
 
-Pessoa Jurídica:
+###### Pessoa Jurídica:
 >{
 >	"type": "PJ",
 >	"name": "Teste PJ",
@@ -31,23 +31,23 @@ Para gerar CNPJ'S válidos pode ser utilizado: https://www.4devs.com.br/gerador_
 http://localhost:8080/api/bank/v1/persons
 
 Exemplo de Response: 
->[
->    {
->        "id": 1,
->        "name": "Teste PF",
->        "score": 6,
->        "account": {
->            "type": "C",
->            "id": 1,
->            "account": "000001",
->            "agency": "0001",
->            "overdraftLimit": 2000.0,
->            "creditCardLimit": 2000.0
->        },
->        "cpf": "70433960000",
->        "type": "PF"
->    }
->]
+```json
+{
+    "id": 1,
+    "name": "Teste PF",
+    "score": 7,
+    "account": {
+        "type": "C",
+        "id": 1,
+        "account": "000001",
+        "agency": "0001",
+        "overdraftLimit": 2000.0,
+        "creditCardLimit": 2000.0
+    },
+    "cpf": "70433960000",
+    "type": "PF"
+}
+```
 
 ##### Para buscar contas: 
 
@@ -55,12 +55,12 @@ http://localhost:8080/api/bank/v1/accounts
 
 Exemplo de Response:
 
->[
->    {
->        "id": 1,
->        "account": "000001",
->        "agency": "0001",
->        "overdraftLimit": 2000.0,
->        "creditCardLimit": 2000.0
->    }
->]
+```json
+{
+    "id": 1,
+    "account": "000001",
+    "agency": "0001",
+    "overdraftLimit": 2000.0,
+    "creditCardLimit": 2000.0
+}
+```
