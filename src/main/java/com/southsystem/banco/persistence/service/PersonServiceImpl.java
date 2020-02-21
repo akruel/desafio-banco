@@ -12,6 +12,7 @@ import com.southsystem.banco.persistence.repo.PersonRepository;
 import com.southsystem.banco.persistence.repo.PhysicalPersonRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -72,7 +73,7 @@ public class PersonServiceImpl implements PersonBaseService<Person> {
     }
 
     @Override
-    public Iterable<Person> findAll() {
-        return personRepository.findAll();
+    public Iterable<Person> findAll(Specification<Person> spec) {
+        return personRepository.findAll(spec);
     }
 }
