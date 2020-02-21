@@ -34,17 +34,6 @@ public class PersonControllerTest {
     @Autowired
     private TestRestTemplate template;
 
-    @Before
-    public void postPerson() {
-
-    }
-
-    @Test
-    public void getHello() throws Exception {
-        ResponseEntity<String> response = template.getForEntity(base.toString() + "/persons", String.class);
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-    }
-
     @Test
     public void testPhysicalSucessPost() throws Exception {
         createPersonJsonObj("PF", "Teste PF", "86281690087");
@@ -63,7 +52,7 @@ public class PersonControllerTest {
 
     @Test
     public void testPostNameException() throws Exception {
-        createPersonJsonObj("PF", "", "86281690087");
+        createPersonJsonObj("PF", "", "70433960000");
         HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
         ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
         JSONObject responseJsonObject = createResponseJsonObj("Dados inválidos", "Nome não pode ser vazio");
