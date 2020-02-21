@@ -1,55 +1,112 @@
-// package com.southsystem.banco.controller;
+package com.southsystem.banco.controller;
 
-// import java.util.Arrays;
-// import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// import com.southsystem.banco.persistence.model.Person;
-// import com.southsystem.banco.persistence.repo.AccountRepository;
-// import com.southsystem.banco.persistence.repo.PersonRepository;
+import java.net.URL;
 
-// import org.junit.Test;
-// import org.junit.runner.RunWith;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-// import org.springframework.boot.test.mock.mockito.MockBean;
-// import org.springframework.test.context.junit4.SpringRunner;
-// import org.springframework.test.web.servlet.MockMvc;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
-// import static org.mockito.BDDMockito.given;
-// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class PersonControllerTest {
 
+    @LocalServerPort
+    private int port;
 
+    private URL base;
 
-// @RunWith(SpringRunner.class)
-// @WebMvcTest(value = PersonController.class)
-// public class PersonControllerTest {
+    JSONObject personJsonObject = new JSONObject();
+    HttpHeaders headers = new HttpHeaders();
 
-// 	@Autowired
-//     private MockMvc mockMvc;
-    
-//     @MockBean
-//     private PersonRepository personRepository;
+    @Autowired
+    private TestRestTemplate template;
 
-//     @MockBean
-//     private AccountRepository accountRepository;
+    @Before
+    public void postPerson() {
 
-//     @Test
-//     public void findAll() throws Exception {
-//         Person person = new Person();
-//         person.setId(1L);
-//         person.setName("Test");
-//         person.setPersonType("PJ");
-//         person.setDocument("86281690087");
-//         person.setScore(7);
-//         List<Person> persons = Arrays.asList(person);
-//         given(personRepository.findAll()).willReturn(persons);
+    }
 
-//         this.mockMvc.perform(get("/api/bank/v1/persons"))
-//                 .andExpect(status().isOk())
-//                 .andExpect(content().json("[{'id': 1,'name': 'Test','personType': 'PJ','score': 7,'document': '86281690087'}]"));
-//     }   
+    @Test
+    public void getHello() throws Exception {
+        ResponseEntity<String> response = template.getForEntity(base.toString() + "/persons", String.class);
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+    }
 
-    
-// }
+    @Test
+    public void testPhysicalSucessPost() throws Exception {
+        createPersonJsonObj("PF", "Teste PF", "86281690087");
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+
+    @Test
+    public void testLegalSucessPost() throws Exception {
+        createPersonJsonObj("PJ", "Teste PJ", "00771194000129");
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+
+    @Test
+    public void testPostNameException() throws Exception {
+        createPersonJsonObj("PF", "", "86281690087");
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
+        JSONObject responseJsonObject = createResponseJsonObj("Dados inválidos", "Nome não pode ser vazio");
+        JSONAssert.assertEquals(response.getBody(), responseJsonObject, JSONCompareMode.LENIENT);
+    }
+
+    @Test
+    public void testPostInvalidCpfException() throws Exception {
+        createPersonJsonObj("PF", "Teste Invalid CPF", "70433960001");
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
+        JSONObject responseJsonObject = createResponseJsonObj("Dados inválidos", "CPF inválido");
+        JSONAssert.assertEquals(response.getBody(), responseJsonObject, JSONCompareMode.LENIENT);
+    }
+
+    @Test
+    public void testPostInvalidCnpjException() throws Exception {
+        createPersonJsonObj("PJ", "Teste Invalid CNPJ", "00771194000121");
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "/person", request, String.class);
+        JSONObject responseJsonObject = createResponseJsonObj("Dados inválidos", "CNPJ inválido");
+        JSONAssert.assertEquals(response.getBody(), responseJsonObject, JSONCompareMode.LENIENT);
+    }
+
+    void createPersonJsonObj(String type, String name, String document) throws Exception {
+        this.base = new URL("http://localhost:" + port + "/api/bank/v1/");
+        personJsonObject.put("type", type);
+        personJsonObject.put("name", name);
+        if(type == "PF"){
+            personJsonObject.put("cpf", document);
+        }
+        if(type == "PJ"){
+            personJsonObject.put("cnpj", document);
+        }
+        headers.setContentType(MediaType.APPLICATION_JSON);
+    }
+
+    JSONObject createResponseJsonObj(String message, String strDetails) throws Exception {
+        JSONObject responseJsonObject = new JSONObject();
+        JSONArray details = new JSONArray();
+        details.put(strDetails);
+        responseJsonObject.put("message", message);
+        responseJsonObject.put("details", details);
+        return responseJsonObject;
+    }
+}
